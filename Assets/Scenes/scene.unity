@@ -357,7 +357,7 @@ MonoBehaviour:
     noiseScaler: 0.5
     remove: 0
   vegetationParameters:
-  - mesh: {fileID: -927199367670048503, guid: 43202a31bd1113061100b7a844295342, type: 3}
+  - mesh: {fileID: -927199367670048503, guid: 8d302a31bd1113061100b7a844295342, type: 3}
     minHeight: 0
     maxHeight: 1
     minSloop: 0
@@ -367,22 +367,36 @@ MonoBehaviour:
     minRotation: 0
     maxRotation: 360
     density: 0.5
-    color1: {r: 1, g: 0.86221516, b: 0.3150943, a: 1}
-    color2: {r: 1, g: 0.11682332, b: 0, a: 1}
-    lightmapColor: {r: 1, g: 0.9445847, b: 0, a: 1}
-    remove: 0
+    color1: {r: 1, g: 0.85272884, b: 0, a: 1}
+    color2: {r: 1, g: 0, b: 0, a: 1}
+    lightmapColor: {r: 1, g: 0.9982651, b: 0, a: 1}
+    remove: 1
   - mesh: {fileID: -927199367670048503, guid: 2a44e858bd119bca11002b7b44295342, type: 3}
-    minHeight: 0
+    minHeight: 0.1
     maxHeight: 1
     minSloop: 45
     maxSloop: 80
-    minScale: 1
+    minScale: 0.5
     maxScale: 2
     minRotation: 0
     maxRotation: 360
     density: 0.5
-    color1: {r: 1, g: 0, b: 0.77376366, a: 1}
-    color2: {r: 0, g: 0.001709587, b: 0.6886792, a: 1}
+    color1: {r: 1, g: 0, b: 0.6634264, a: 1}
+    color2: {r: 1, g: 1, b: 1, a: 1}
+    lightmapColor: {r: 1, g: 1, b: 1, a: 1}
+    remove: 0
+  - mesh: {fileID: 100000, guid: 21e1dddb280f946a3b1555bb9d691e43, type: 3}
+    minHeight: 0
+    maxHeight: 0.2
+    minSloop: 0
+    maxSloop: 90
+    minScale: 0.5
+    maxScale: 2
+    minRotation: 0
+    maxRotation: 360
+    density: 0.5
+    color1: {r: 1, g: 0, b: 0, a: 1}
+    color2: {r: 0.68643475, g: 0, b: 1, a: 1}
     lightmapColor: {r: 1, g: 1, b: 1, a: 1}
     remove: 0
   maxTrees: 10000

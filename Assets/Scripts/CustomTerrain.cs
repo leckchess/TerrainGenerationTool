@@ -532,6 +532,9 @@ public class CustomTerrain : MonoBehaviour
         terrainData.treePrototypes = newTreePrototype;
         float randomrange = 0.5f;
 
+        //float xScale = terrainData.size.x / terrainData.heightmapResolution;
+        //float zScale = terrainData.size.z / terrainData.heightmapResolution;
+
         List<TreeInstance> allVegetations = new List<TreeInstance>();
         for (int z = 0; z < terrainData.size.z; z += treeSpacing)
         {
@@ -557,6 +560,10 @@ public class CustomTerrain : MonoBehaviour
                         {
                             float treeHeight = (hit.point.y - this.transform.position.y) / terrainData.size.y;
                             instance.position = new Vector3(instance.position.x, treeHeight, instance.position.z);
+
+                            //instance.position = new Vector3(instance.position.x * terrainData.size.x / terrainData.alphamapWidth,
+                            //    instance.position.y,
+                            //    instance.position.z * terrainData.size.z / terrainData.alphamapHeight);
 
                             instance.rotation = Random.Range(vegetationParameters[tp].minRotation, vegetationParameters[tp].maxRotation);
                             instance.prototypeIndex = tp;
