@@ -40,6 +40,11 @@ public class CustomTerrainEditor : Editor
     private GUITableState _splatMapsParametersTable;
     private SerializedProperty _splatMapsParameters;
 
+    private GUITableState _vegetationParametersTable;
+    private SerializedProperty _vegetationParameters;
+    private SerializedProperty _maxTrees;
+    private SerializedProperty _treeSpacing;
+
     private bool _showRandom = false;
     private bool _showImage = false;
     private bool _showSinglePerlin = false;
@@ -49,6 +54,7 @@ public class CustomTerrainEditor : Editor
     private bool _smooth = false;
     private bool _splatMap = false;
     private bool _heightMap = false;
+    private bool _vegetation = false;
 
     private Vector2 _scrollPos;
     private Texture2D _currHeightMap;
@@ -81,10 +87,16 @@ public class CustomTerrainEditor : Editor
         _MPD_heightDampenerPower = serializedObject.FindProperty("MPD_heightDampenerPower");
         _smoothAmount = serializedObject.FindProperty("smoothAmount");
 
+
         _splatMapsParametersTable = new GUITableState("splatMapsParametersTable");
         _splatMapsParameters = serializedObject.FindProperty("splatMapsParameters");
 
         _currHeightMap = new Texture2D(513, 513, TextureFormat.ARGB32, false);
+        
+        _maxTrees = serializedObject.FindProperty("maxTrees");
+        _treeSpacing = serializedObject.FindProperty("treeSpacing");
+        _vegetationParametersTable = new GUITableState("vegetationParametersTable");
+        _vegetationParameters = serializedObject.FindProperty("vegetationParameters");
         //_splatOffset = serializedObject.FindProperty("splatOffset");
         //_noiseXScale = serializedObject.FindProperty("noiseXScale");
         //_noiseYScale = serializedObject.FindProperty("noiseYScale");
@@ -220,9 +232,34 @@ public class CustomTerrainEditor : Editor
             if (GUILayout.Button("-"))
                 customTerrain.RemoveSplatMap();
             EditorGUILayout.EndHorizontal();
+
             if (GUILayout.Button("Apply Splat Maps"))
             {
                 customTerrain.SplatMaps();
+            }
+        }
+
+        _vegetation = EditorGUILayout.Foldout(_vegetation, "Vegetation");
+        if(_vegetation)
+        {
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            GUILayout.Label("Vegetation", EditorStyles.boldLabel);
+
+            EditorGUILayout.IntSlider(_maxTrees, 0, 10000, new GUIContent("Max Trees"));
+            EditorGUILayout.IntSlider(_treeSpacing, 2, 20, new GUIContent("Tree Spacing"));
+
+            _vegetationParametersTable = GUITableLayout.DrawTable(_vegetationParametersTable, _vegetationParameters);
+            GUILayout.Space(20);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("+"))
+                customTerrain.AddNewVegetation();
+            if (GUILayout.Button("-"))
+                customTerrain.RemoveVegetation();
+            EditorGUILayout.EndHorizontal();
+
+            if (GUILayout.Button("Apply Vegetation"))
+            {
+                customTerrain.Vegetation();
             }
         }
 
