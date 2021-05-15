@@ -45,6 +45,11 @@ public class CustomTerrainEditor : Editor
     private SerializedProperty _maxTrees;
     private SerializedProperty _treeSpacing;
 
+    private GUITableState _detailsParametersTable;
+    private SerializedProperty _detailsParameters;
+    private SerializedProperty _maxDetails;
+    private SerializedProperty _detailsSpacing;
+
     private bool _showRandom = false;
     private bool _showImage = false;
     private bool _showSinglePerlin = false;
@@ -55,6 +60,7 @@ public class CustomTerrainEditor : Editor
     private bool _splatMap = false;
     private bool _heightMap = false;
     private bool _vegetation = false;
+    private bool _details = false;
 
     private Vector2 _scrollPos;
     private Texture2D _currHeightMap;
@@ -97,6 +103,12 @@ public class CustomTerrainEditor : Editor
         _treeSpacing = serializedObject.FindProperty("treeSpacing");
         _vegetationParametersTable = new GUITableState("vegetationParametersTable");
         _vegetationParameters = serializedObject.FindProperty("vegetationParameters");
+
+        _maxDetails = serializedObject.FindProperty("maxDetails");
+        _detailsSpacing = serializedObject.FindProperty("detailsSpacing");
+        _detailsParametersTable = new GUITableState("detailsParametersTable");
+        _detailsParameters = serializedObject.FindProperty("detailsParameters");
+
         //_splatOffset = serializedObject.FindProperty("splatOffset");
         //_noiseXScale = serializedObject.FindProperty("noiseXScale");
         //_noiseYScale = serializedObject.FindProperty("noiseYScale");
@@ -260,6 +272,32 @@ public class CustomTerrainEditor : Editor
             if (GUILayout.Button("Apply Vegetation"))
             {
                 customTerrain.Vegetation();
+            }
+        }
+
+        _details = EditorGUILayout.Foldout(_details, "Details");
+        if (_details)
+        {
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            GUILayout.Label("Details", EditorStyles.boldLabel);
+
+            EditorGUILayout.IntSlider(_maxDetails, 0, 10000, new GUIContent("Max Trees"));
+            EditorGUILayout.IntSlider(_detailsSpacing, 2, 20, new GUIContent("Tree Spacing"));
+
+            customTerrain.GetComponent<Terrain>().detailObjectDistance = _maxDetails.intValue;
+
+            _detailsParametersTable = GUITableLayout.DrawTable(_detailsParametersTable, _detailsParameters);
+            GUILayout.Space(20);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("+"))
+                customTerrain.AddNewDetails();
+            if (GUILayout.Button("-"))
+                customTerrain.RemoveDetails();
+            EditorGUILayout.EndHorizontal();
+
+            if (GUILayout.Button("Apply Details"))
+            {
+                customTerrain.Details();
             }
         }
 

@@ -250,7 +250,7 @@ Terrain:
   m_TreeBillboardDistance: 2000
   m_TreeCrossFadeLength: 200
   m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 250
+  m_DetailObjectDistance: 10000
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
@@ -298,7 +298,7 @@ MonoBehaviour:
   randomHeightRange: {x: 0.1, y: 0.001}
   heightMapImage: {fileID: 2800000, guid: 32bdbbfe12fb6ee4c950f6fc0c42cce3, type: 3}
   heightMapScale: {x: 1, y: 0.3, z: 1}
-  resetTerrain: 1
+  resetTerrain: 0
   perlinXScale: 0.0001
   perlinYScale: 0.0001
   perlinXOffset: 1409
@@ -346,7 +346,7 @@ MonoBehaviour:
     remove: 0
   - texture: {fileID: 2800000, guid: b9f5d1f565b41497a97590f506937b53, type: 3}
     minHeight: 0
-    maxHeight: 1
+    maxHeight: 0.1
     minSlope: 45
     maxSlope: 90
     tileOffset: {x: 0, y: 0}
@@ -356,9 +356,21 @@ MonoBehaviour:
     noiseYScale: 0.01
     noiseScaler: 0.5
     remove: 0
+  - texture: {fileID: 2800000, guid: dd49ed99f55924d13bacefd240626bc5, type: 3}
+    minHeight: 0.3
+    maxHeight: 1
+    minSlope: 0.01
+    maxSlope: 45
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 50, y: 50}
+    splatOffset: 0.01
+    noiseXScale: 0.01
+    noiseYScale: 0.01
+    noiseScaler: 0.5
+    remove: 0
   vegetationParameters:
   - mesh: {fileID: -927199367670048503, guid: 8d302a31bd1113061100b7a844295342, type: 3}
-    minHeight: 0
+    minHeight: 0.1
     maxHeight: 1
     minSloop: 0
     maxSloop: 45
@@ -386,7 +398,7 @@ MonoBehaviour:
     lightmapColor: {r: 1, g: 1, b: 1, a: 1}
     remove: 0
   - mesh: {fileID: 100000, guid: 21e1dddb280f946a3b1555bb9d691e43, type: 3}
-    minHeight: 0
+    minHeight: 0.1
     maxHeight: 0.2
     minSloop: 0
     maxSloop: 90
@@ -399,8 +411,55 @@ MonoBehaviour:
     color2: {r: 0.68643475, g: 0, b: 1, a: 1}
     lightmapColor: {r: 1, g: 1, b: 1, a: 1}
     remove: 0
+  - mesh: {fileID: -927199367670048503, guid: 25fa881dbd110e38a00062d88f962b59, type: 3}
+    minHeight: 0
+    maxHeight: 0.2
+    minSloop: 0
+    maxSloop: 90
+    minScale: 0.5
+    maxScale: 0.95
+    minRotation: 0
+    maxRotation: 360
+    density: 0.5
+    color1: {r: 1, g: 0.9504634, b: 0, a: 1}
+    color2: {r: 0.65571594, g: 0.6264151, b: 1, a: 1}
+    lightmapColor: {r: 1, g: 1, b: 1, a: 1}
+    remove: 0
   maxTrees: 10000
   treeSpacing: 4
+  detailsParameters:
+  - prototype: {fileID: -927199367670048503, guid: 8e41f14c6552d48e6a7992aaecc808e4, type: 3}
+    prototypeTexture: {fileID: 0}
+    minHeight: 0
+    maxHeight: 0
+    minSloop: 0
+    maxSloop: 0
+    heightRange: {x: 1, y: 2}
+    widthRange: {x: 1, y: 2}
+    noiseSpread: 0.1
+    overlap: 0.01
+    feather: 0.05
+    density: 0.005
+    dryColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
+    healthColor: {r: 0.33720186, g: 0.3490566, b: 0.34820977, a: 1}
+    remove: 0
+  - prototype: {fileID: 0}
+    prototypeTexture: {fileID: 2800000, guid: a65d3373cd11cd72a00009188f962b59, type: 3}
+    minHeight: 0
+    maxHeight: 0.01
+    minSloop: 0
+    maxSloop: 50
+    heightRange: {x: 1, y: 5}
+    widthRange: {x: 1, y: 1}
+    noiseSpread: 0.1
+    overlap: 0.01
+    feather: 0.05
+    density: 1
+    dryColor: {r: 0.6792453, g: 0.09868278, b: 0.5608562, a: 1}
+    healthColor: {r: 0.31541145, g: 1, b: 0, a: 1}
+    remove: 0
+  maxDetails: 10000
+  detailsSpacing: 3
   peaksCount: 1
   fallOff: 1.66
   dropOff: 2.27

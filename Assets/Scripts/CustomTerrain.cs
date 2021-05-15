@@ -80,6 +80,32 @@ public class CustomTerrain : MonoBehaviour
     public int maxTrees = 5000;
     public int treeSpacing = 5;
 
+    //DETAILS -----------------------------
+    [System.Serializable]
+    public class DetailsParameters
+    {
+        public GameObject prototype;
+        public Texture2D prototypeTexture = null;
+        public float minHeight = 0.1f;
+        public float maxHeight = 0.2f;
+        public float minSloop = 0;
+        public float maxSloop = 90;
+        public Vector2 heightRange = new Vector2(0.5f,0.95f);
+        public Vector2 widthRange = new Vector2(0.5f, 0.95f);
+        public float noiseSpread = 0.5f;
+        public float overlap = 0.01f;
+        public float feather = 0.05f;
+        public float density = 0.5f;
+        public Color dryColor = Color.white;
+        public Color healthColor = Color.white;
+        public bool remove = false;
+    }
+
+    public List<DetailsParameters> detailsParameters = new List<DetailsParameters>() { new DetailsParameters() };
+    public int maxDetails = 5000;
+    public int detailsSpacing = 5;
+
+
     //PEAKS ----------------------------------
     public int peaksCount = 1;
     public float fallOff = 0.2f;
@@ -583,7 +609,6 @@ public class CustomTerrain : MonoBehaviour
         terrainData.treeInstances = allVegetations.ToArray();
     }
 
-
     public void AddNewVegetation()
     {
         vegetationParameters.Add(new VegetationParameters());
@@ -603,6 +628,88 @@ public class CustomTerrain : MonoBehaviour
         vegetationParameters = keptVegetationParameters;
     }
 
+    public void Details()
+    {
+        DetailPrototype[] newDetailsPrototypes;
+        newDetailsPrototypes = new DetailPrototype[detailsParameters.Count];
+        int index = 0;
+        foreach (DetailsParameters detail in detailsParameters)
+        {
+            newDetailsPrototypes[index] = new DetailPrototype();
+            newDetailsPrototypes[index].prototype = detail.prototype;
+            newDetailsPrototypes[index].prototypeTexture = detail.prototypeTexture;
+            newDetailsPrototypes[index].healthyColor = detail.healthColor;
+            newDetailsPrototypes[index].dryColor = detail.dryColor;
+            newDetailsPrototypes[index].noiseSpread = detail.noiseSpread;
+            newDetailsPrototypes[index].minHeight = detail.heightRange.x;
+            newDetailsPrototypes[index].maxHeight = detail.heightRange.y;
+            newDetailsPrototypes[index].minWidth = detail.widthRange.x;
+            newDetailsPrototypes[index].maxWidth = detail.widthRange.y;
+
+            if (newDetailsPrototypes[index].prototype)
+            {
+                newDetailsPrototypes[index].usePrototypeMesh = true;
+                newDetailsPrototypes[index].renderMode = DetailRenderMode.VertexLit;
+            }
+            else
+            {
+                newDetailsPrototypes[index].usePrototypeMesh = false;
+                newDetailsPrototypes[index].renderMode = DetailRenderMode.GrassBillboard;
+            }
+            index++;
+        }
+
+        terrainData.detailPrototypes = newDetailsPrototypes;
+
+        for (int i = 0; i < terrainData.detailPrototypes.Length; i++)
+        {
+            int[,] detailsMap = new int[terrainData.detailWidth, terrainData.detailHeight];
+
+            for (int y = 0; y < terrainData.detailHeight; y += detailsSpacing)
+            {
+                for (int x = 0; x < terrainData.detailWidth; x += detailsSpacing)
+                {
+                    if (Random.Range(0.0f, 1.0f) > detailsParameters[i].density) continue;
+
+                    int xHeightMap = (int)(x / (float)terrainData.detailWidth * terrainData.heightmapResolution);
+                    int yHeightMap = (int)(y / (float)terrainData.detailHeight * terrainData.heightmapResolution);
+
+                    float thisNoise = Utils.Map(Mathf.PerlinNoise(x * detailsParameters[i].feather, y * detailsParameters[i].feather), 0, 1, 0.5f, 1);
+                    float thisHeightStart = detailsParameters[i].minHeight * thisNoise - detailsParameters[i].overlap * thisNoise;
+                    float thisHeightEnd = detailsParameters[i].maxHeight * thisNoise + detailsParameters[i].overlap * thisNoise;
+
+                    float thisHeight = terrainData.GetHeight(yHeightMap, xHeightMap);
+                    float steepness = terrainData.GetSteepness(xHeightMap / (float)terrainData.size.x, yHeightMap / (float)terrainData.size.z);
+
+                    if (thisHeight >= thisHeightStart && thisHeight <= thisHeightEnd &&
+                        steepness >= detailsParameters[i].minSloop && steepness <= detailsParameters[i].maxSloop)
+                    {
+                        detailsMap[y, x] = 1;
+                    }
+                }
+            }
+            terrainData.SetDetailLayer(0, 0, i, detailsMap);
+        }
+    }
+
+    public void AddNewDetails()
+    {
+        detailsParameters.Add(new DetailsParameters());
+    }
+
+    public void RemoveDetails()
+    {
+        List<DetailsParameters> keptDetailsParameters = new List<DetailsParameters>();
+        for (int i = 0; i < detailsParameters.Count; i++)
+        {
+            if (!detailsParameters[i].remove)
+                keptDetailsParameters.Add(detailsParameters[i]);
+        }
+        if (keptDetailsParameters.Count == 0)
+            keptDetailsParameters.Add(detailsParameters[0]);
+
+        detailsParameters = keptDetailsParameters;
+    }
 
     public void ResetTerrain()
     {
