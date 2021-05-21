@@ -50,6 +50,11 @@ public class CustomTerrainEditor : Editor
     private SerializedProperty _maxDetails;
     private SerializedProperty _detailsSpacing;
 
+    private SerializedProperty _waterHeight;
+    private SerializedProperty _waterGameObject;
+    private SerializedProperty _shorelineMaterial;
+    private SerializedProperty _shorelineScale;
+
     private bool _showRandom = false;
     private bool _showImage = false;
     private bool _showSinglePerlin = false;
@@ -61,6 +66,7 @@ public class CustomTerrainEditor : Editor
     private bool _heightMap = false;
     private bool _vegetation = false;
     private bool _details = false;
+    private bool _water = false;
 
     private Vector2 _scrollPos;
     private Texture2D _currHeightMap;
@@ -93,7 +99,6 @@ public class CustomTerrainEditor : Editor
         _MPD_heightDampenerPower = serializedObject.FindProperty("MPD_heightDampenerPower");
         _smoothAmount = serializedObject.FindProperty("smoothAmount");
 
-
         _splatMapsParametersTable = new GUITableState("splatMapsParametersTable");
         _splatMapsParameters = serializedObject.FindProperty("splatMapsParameters");
 
@@ -108,6 +113,11 @@ public class CustomTerrainEditor : Editor
         _detailsSpacing = serializedObject.FindProperty("detailsSpacing");
         _detailsParametersTable = new GUITableState("detailsParametersTable");
         _detailsParameters = serializedObject.FindProperty("detailsParameters");
+        
+        _waterHeight = serializedObject.FindProperty("waterHeight");
+        _waterGameObject = serializedObject.FindProperty("waterGameObject");
+        _shorelineMaterial = serializedObject.FindProperty("shorelineMaterial");
+        _shorelineScale = serializedObject.FindProperty("shorelineScale");
 
         //_splatOffset = serializedObject.FindProperty("splatOffset");
         //_noiseXScale = serializedObject.FindProperty("noiseXScale");
@@ -281,8 +291,8 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             GUILayout.Label("Details", EditorStyles.boldLabel);
 
-            EditorGUILayout.IntSlider(_maxDetails, 0, 10000, new GUIContent("Max Trees"));
-            EditorGUILayout.IntSlider(_detailsSpacing, 2, 20, new GUIContent("Tree Spacing"));
+            EditorGUILayout.IntSlider(_maxDetails, 0, 10000, new GUIContent("Max Details"));
+            EditorGUILayout.IntSlider(_detailsSpacing, 2, 20, new GUIContent("Details Spacing"));
 
             customTerrain.GetComponent<Terrain>().detailObjectDistance = _maxDetails.intValue;
 
@@ -301,7 +311,30 @@ public class CustomTerrainEditor : Editor
             }
         }
 
-        _smooth = EditorGUILayout.Foldout(_smooth, "Smooth Terrain");
+        _water = EditorGUILayout.Foldout(_water, "Water");
+        if (_water)
+        {
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            GUILayout.Label("Water", EditorStyles.boldLabel);
+
+            EditorGUILayout.Slider(_waterHeight, 0, 1f, new GUIContent("Water Height"));
+            EditorGUILayout.PropertyField(_waterGameObject);
+
+            if (GUILayout.Button("Add Water"))
+            {
+                customTerrain.Water();
+            }
+
+            EditorGUILayout.Slider(_shorelineScale, 0, 100, new GUIContent("Shoreline Scale"));
+            EditorGUILayout.PropertyField(_shorelineMaterial);
+
+            if (GUILayout.Button("Add Shoreline"))
+            {
+                customTerrain.Shoreline();
+            }
+        }
+
+            _smooth = EditorGUILayout.Foldout(_smooth, "Smooth Terrain");
         if (_smooth)
         {
             EditorGUILayout.IntSlider(_smoothAmount, 0, 10, new GUIContent("Smooth Amount"));
